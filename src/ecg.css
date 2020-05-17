@@ -1,0 +1,51 @@
+.monitor {
+  padding: 0;
+  background-color: #0b0e13;
+  height: 100vh;
+}
+
+.cardiac svg .ekg{
+  fill: none;
+  stroke: #00d704;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: miter;
+  opacity: 100;
+  stroke-dashoffset: 4000;
+  stroke-dasharray: 4000;
+  animation: tracing 1s linear forwards infinite;
+}
+
+.cardiac svg text{
+  fill:  #00d704;
+  stroke: #00d704;
+}
+
+
+@keyframes ekg {
+    0% {
+      opacity: 0;
+    }
+    25% {
+      opacity: 1;
+    }
+    50% {
+      stroke-dashoffset: 000;
+    }
+    99% {
+      opacity: 0;
+      stroke-dashoffset: 3000;
+    }
+    100% {
+      stroke-dashoffset: 1000;
+    }
+}
+
+@keyframes tracing {
+  from {
+    stroke-dashoffset: 4000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
