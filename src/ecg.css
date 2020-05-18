@@ -8,4 +8,42 @@
     fill: none;
     stroke: #00c220;
     stroke-width: 3px;
+    margin-right: 150px;
 }
+
+.ecg{
+	float:left;
+}
+
+.pulseRate {
+  fill:  #00c220;
+  stroke: #00c220;
+  position: absolute;
+  float: right;
+  stroke-linecap: round;
+  stroke-linejoin: miter;
+  opacity: 0;
+  stroke-dashoffset: 1000;
+  stroke-dasharray: 1000;
+  animation: ecg 1s linear forwards infinite;
+}
+
+@keyframes ecg {
+    0% {
+      opacity: 0;
+    }
+    25% {
+      opacity: 1;
+    }
+    50% {
+      stroke-dashoffset: 2000;
+    }
+    99% {
+      opacity: 0;
+      stroke-dashoffset: 3000;
+    }
+    100% {
+      stroke-dashoffset: 1000;
+    }
+}
+
