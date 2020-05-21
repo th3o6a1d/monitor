@@ -1,49 +1,29 @@
-.monitor {
-  padding: 0;
-  background-color: #0b0e13;
-  height: 100vh;
-}
 
-.line {
-    fill: none;
-    stroke: #00c220;
-    stroke-width: 3px;
-    margin-right: 150px;
-}
 
-.ecg{
-	float:left;
-}
-
-.pulseRate {
-  fill:  #00c220;
-  stroke: #00c220;
-  position: absolute;
-  float: right;
-  stroke-linecap: round;
-  stroke-linejoin: miter;
-  opacity: 0;
-  stroke-dashoffset: 1000;
+.tracing {
   stroke-dasharray: 1000;
-  animation: ecg 1s linear forwards infinite;
+  stroke-dashoffset: 1000;
+  animation: dash 5s linear alternate infinite;
 }
 
-@keyframes ecg {
-    0% {
-      opacity: 0;
-    }
-    25% {
-      opacity: 1;
-    }
-    50% {
-      stroke-dashoffset: 2000;
-    }
-    99% {
-      opacity: 0;
-      stroke-dashoffset: 3000;
-    }
-    100% {
-      stroke-dashoffset: 1000;
-    }
+.coming {
+  stroke: green;
+  fill:none;
+  stroke-width: 4;
+}
+
+.going {
+  stroke: red;
+  fill:none;
+  stroke-width: 4;
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 100%;
+  }
+  to {
+    stroke-dashoffset: 0%;
+  }
 }
 

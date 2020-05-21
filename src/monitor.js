@@ -1,7 +1,6 @@
 import React from 'react';
 import * as serviceWorker from './serviceWorker';
 import ECG from './ecg';
-import Oximetry from './oximetry';
 
 class Monitor extends React.Component {
 
@@ -14,7 +13,6 @@ class Monitor extends React.Component {
     return (
       <div>
        	<ECG data={this.state}/>
-        <Oximetry data={this.state}/>
       </div>
     );
   }
