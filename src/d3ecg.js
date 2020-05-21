@@ -5,9 +5,9 @@ class D3ECG {
         // The width ratios allows for the normalization of the widths of the
         // different segments of the pqrst wave.
 
-        this.pulseRate = 100;
-
-
+        this.pulseRate = 0; 
+        this.k= 0.5
+        
         this.PQRST_WAVE_WIDTH_RATIOS = {
             p: 12,
             pq: 2,
@@ -16,11 +16,10 @@ class D3ECG {
             s: 3,
             st: 2,
             t: 12,
-            tp: 1,
-            z: 20
+            tp: 10/this.k
         };
 
-        this.norm_array = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
+        this.norm_array = [0.0, 0.025, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.225, 0.25, 0.275, 0.3, 0.325, 0.35, 0.375, 0.4, 0.425, 0.45, 0.475, 0.5, 0.525, 0.55, 0.575, 0.6, 0.625, 0.65, 0.675, 0.7, 0.725, 0.75, 0.775, 0.8, 0.825, 0.85, 0.875, 0.9, 0.925, 0.95, 0.975];
         this.data_cursor = 0;
         this.data_buffer = [];
     }
@@ -36,8 +35,6 @@ class D3ECG {
 
 
         var svg = d3.select(ref),
-        // width = +svg.attr("width"),
-        // height = +svg.attr("height"),
         width = 900,
         height = 300,
         g = svg.append("g");
@@ -198,11 +195,8 @@ class D3ECG {
 
     getStepSize() {
         var step = 1 / ((Object.keys(this.PQRST_WAVE_WIDTH_RATIOS).length * this.norm_array.length));
-        step = step / (this.pulseRate / 100)
         return step;
     }
-
-
 
     /**
      * Creates a single, discrete movement of the data cursor. 
@@ -222,6 +216,19 @@ class D3ECG {
      */
     _generatePQRSTWave() {
         // P mimics a beta distribution
+        // var p = (x) => 2 * Math.pow(x, 3) * (1-x);
+        // // Q mimics the -ve part of a sine wave
+        // var q = (x) =>  -1 * Math.pow(1.1, Math.sin(x, Math.PI)) + 1;
+        // // R mimics the +ve part of a skewed sine wave
+        // var r = (x) =>  Math.pow(7, Math.sin(x, Math.PI)) - 1;
+        // // S mimics the -ve part of a skewed sine wave
+        // var s = (x) =>  -1 * Math.pow(1.1, Math.sin(x, Math.PI)) + 1;
+        // // T mimics a beta distribution
+        // var t = (x) =>  5 * Math.pow(x, 2) * (1-x);
+        // // pq, st, and tp segments mimic y=0
+        // var zero_segment = (x) => Math.random()/10;
+
+
         var p = (x) => 2 * Math.pow(x, 3) * (1-x);
         // Q mimics the -ve part of a sine wave
         var q = (x) =>  -1 * Math.pow(1.1, Math.sin(x, Math.PI)) + 1;
@@ -236,7 +243,7 @@ class D3ECG {
 
         // generate plot points for a single pqrst wave
         // y points for each segment
-        var p_y = this.norm_array.map(p);
+        var p_y = this.norm_array.map(zero_segment);
         var pq_y = this.norm_array.map(zero_segment);
         var q_y = this.norm_array.map(q);
         var r_y = this.norm_array.map(r);
@@ -245,57 +252,50 @@ class D3ECG {
         var t_y = this.norm_array.map(t);
         var tp_y = this.norm_array.map(zero_segment);
 
-
-
         // map normalized domain (0.0-1.0) to absolute domain
         var sum_width_ratios = this.extObjectValues(this.PQRST_WAVE_WIDTH_RATIOS).reduce((acc, x) => {
-            return sum_width_ratios = acc + x;
+            return (acc + x);
         }, 0.0);
 
-        var p_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.p / sum_width_ratios);
-        var pq_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.pq / sum_width_ratios);
-        var q_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.q / sum_width_ratios);
-        var r_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.r / sum_width_ratios);
-        var s_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.s / sum_width_ratios);
-        var st_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.st / sum_width_ratios);
-        var t_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.t / sum_width_ratios);
-        var tp_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.tp / sum_width_ratios);
 
-        var z_x = new Array(200-this.pulseRate).fill(0).map((e,x) => e + x/100)
-        // z_x = z_x.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.z / sum_width_ratios);
-        var z_y = z_x.map(zero_segment);
+        var p_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.p /this.k / sum_width_ratios);
+        var pq_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.pq /this.k / sum_width_ratios);
+        var q_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.q /this.k / sum_width_ratios);
+        var r_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.r /this.k / sum_width_ratios);
+        var s_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.s /this.k / sum_width_ratios);
+        var st_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.st /this.k / sum_width_ratios);
+        var t_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.t /this.k / sum_width_ratios);
+        var tp_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.tp / this.k / sum_width_ratios);
+
 
         // Apply the wave offset + segment offset to each segment
         // i.e. t should start after r finishes, and r should start after s, etc.
         var segment_offset = this.data_cursor;
-        p_x = p_x.map(x => x + segment_offset);
+        p_x = p_x.map(x => x + segment_offset / this.k);
         
         segment_offset += this.PQRST_WAVE_WIDTH_RATIOS.p / sum_width_ratios;
-        pq_x = pq_x.map(x => x + segment_offset);
+        pq_x = pq_x.map(x => x + segment_offset / this.k);
         
         segment_offset += this.PQRST_WAVE_WIDTH_RATIOS.pq / sum_width_ratios;
-        q_x = q_x.map(x => x + segment_offset);
+        q_x = q_x.map(x => x + segment_offset / this.k);
 
         segment_offset += this.PQRST_WAVE_WIDTH_RATIOS.q / sum_width_ratios;
-        r_x = r_x.map(x => x + segment_offset);
+        r_x = r_x.map(x => x + segment_offset / this.k);
 
         segment_offset += this.PQRST_WAVE_WIDTH_RATIOS.r / sum_width_ratios;
-        s_x = s_x.map(x => x + segment_offset);
+        s_x = s_x.map(x => x + segment_offset / this.k);
 
         segment_offset += this.PQRST_WAVE_WIDTH_RATIOS.s / sum_width_ratios;
-        st_x = st_x.map(x => x + segment_offset);
+        st_x = st_x.map(x => x + segment_offset / this.k);
 
         segment_offset += this.PQRST_WAVE_WIDTH_RATIOS.st / sum_width_ratios;
-        t_x = t_x.map(x => x + segment_offset);
+        t_x = t_x.map(x => x + segment_offset / this.k);
 
         segment_offset += this.PQRST_WAVE_WIDTH_RATIOS.t / sum_width_ratios;
-        tp_x = tp_x.map(x => x + segment_offset);
+        tp_x = tp_x.map(x => x + segment_offset / this.k);
 
-        segment_offset += this.PQRST_WAVE_WIDTH_RATIOS.tp / sum_width_ratios;
-        z_x = z_x.map(x => x + segment_offset);
-
-        var x = [p_x, pq_x, q_x, r_x, s_x, st_x, t_x, tp_x, z_x].reduce((a, b) => a.concat(b), []);
-        var y = [p_y, pq_y, q_y, r_y, s_y, st_y, t_y, tp_y, z_y].reduce((a, b) => a.concat(b), []);
+        var x = [p_x, pq_x, q_x, r_x, s_x, st_x, t_x, tp_x].reduce((a, b) => a.concat(b), []);
+        var y = [p_y, pq_y, q_y, r_y, s_y, st_y, t_y, tp_y].reduce((a, b) => a.concat(b), []);
 
         return x.map((e, i) => [e, y[i]]);
     }
