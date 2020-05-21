@@ -10,15 +10,20 @@ class ECG extends React.Component {
       super(props);
       this.state = this.props.data
       this.cardiac = new D3ECG("cardiac")
+      this.oximetry = new D3ECG("oximetry")
   }
 
   componentDidMount(){
       this.cardiac.drawECG(this.refs.cardiac)
+      this.oximetry.drawECG(this.refs.oximetry)
   }
 
 render() {
     return (
+      <div>
       <div ref="cardiac"/>
+      <div ref="oximetry"/>
+      </div>
         );
     }
 }

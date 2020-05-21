@@ -1,4 +1,7 @@
 
+.monitor {
+  background-color:black;
+}
 
 .tracing {
   stroke-dasharray: 1000;
@@ -13,7 +16,7 @@
 }
 
 .going {
-  stroke: red;
+  stroke: green;
   fill:none;
   stroke-width: 4;
 }
