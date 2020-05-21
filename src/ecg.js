@@ -9,22 +9,20 @@ class ECG extends React.Component {
   constructor(props){
       super(props);
       this.state = this.props.data
+      this.cardiac = new D3ECG("cardiac")
+      this.oximetry = new D3ECG("oximetry")
   }
 
   componentDidMount(){
-      var d3ecg = new D3ECG()
-      d3ecg.drawECG(this.refs.cardiac)
-
-      var d3pulseox = new D3ECG()
-      d3pulseox.drawECG(this.refs.pulseox)
-
+      this.cardiac.drawECG(this.refs.cardiac)
+      this.oximetry.drawECG(this.refs.oximetry)
   }
 
 render() {
     return (
       <div>
-        <svg className="ecg" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid meet" ref="cardiac"></svg>
-        <svg className="pulseox" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid meet" ref="pulseox"></svg>
+        <svg className="cardiac" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid meet" ref="cardiac"></svg>
+        <svg className="oximetry" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid meet" ref="oximetry"></svg>
         </div>
         );
     }

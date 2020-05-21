@@ -1,13 +1,13 @@
 import * as d3 from "d3";
 
 class D3ECG {
-    constructor() {
+    constructor(tracingType) {
         // The width ratios allows for the normalization of the widths of the
         // different segments of the pqrst wave.
-
         this.pulseRate = 0; 
         this.k= 0.5
-        
+        this.tracingType=tracingType;
+
         this.PQRST_WAVE_WIDTH_RATIOS = {
             p: 12,
             pq: 2,
@@ -19,13 +19,14 @@ class D3ECG {
             tp: 10/this.k
         };
 
-        this.norm_array = [0.0, 0.025, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.225, 0.25, 0.275, 0.3, 0.325, 0.35, 0.375, 0.4, 0.425, 0.45, 0.475, 0.5, 0.525, 0.55, 0.575, 0.6, 0.625, 0.65, 0.675, 0.7, 0.725, 0.75, 0.775, 0.8, 0.825, 0.85, 0.875, 0.9, 0.925, 0.95, 0.975];
+        this.norm_array = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
         this.data_cursor = 0;
         this.data_buffer = [];
     }
 
 
     drawECG(ref){
+
         var MAX_X = 12,
         MAX_Y = 5,
         MIN_Y = -3,
@@ -33,13 +34,12 @@ class D3ECG {
         MASK_STEP_SIZE = 0.1,
         MASK_TRANSITION_DURATION = 50;
 
-
         var svg = d3.select(ref),
         width = 900,
         height = 300,
         g = svg.append("g");
 
-        var ecg = new D3ECG(),
+        var ecg = new D3ECG(this.tracingType),
         data = [];
 
         var x = d3.scaleLinear()
@@ -205,45 +205,63 @@ class D3ECG {
      */
     tick() {
         if (this.data_buffer.length === 0)
-            this.data_buffer = this._generatePQRSTWave();
+            if(this.tracingType === 'oximetry'){
+                this.data_buffer = this._generateOximetry();
+            } else {
+                this.data_buffer = this._generatePQRSTWave();
+            }
 
         this.data_cursor += this.getStepSize();
         return this.data_buffer.shift();
     }
 
+    _generateOximetry() {
+
+        var p = (x) => Math.sin(x);
+        var p_x = this.norm_array;
+        var p_y = p_x.map(p);
+
+        // Apply the wave offset + segment offset to each segment
+        // i.e. t should start after r finishes, and r should start after s, etc.
+
+        this.j=this.k/10
+
+        var sum_width_ratios = this.extObjectValues(this.PQRST_WAVE_WIDTH_RATIOS).reduce((acc, x) => {
+            return acc+x;
+        }, 0.0);
+
+        var p_x = this.norm_array.map(x => x / sum_width_ratios);
+        var segment_offset = this.data_cursor;
+        p_x = p_x.map(x => x + segment_offset);
+
+        var x = [p_x].reduce((a, b) => a.concat(b), []);
+
+        var y = [p_y].reduce((a, b) => a.concat(b), []);
+
+        return x.map((e, i) => [e, y[i]]);
+    }
+
+
     /**
      * generate a PQRST wave and append it to the ECG data. 
      */
     _generatePQRSTWave() {
-        // P mimics a beta distribution
-        // var p = (x) => 2 * Math.pow(x, 3) * (1-x);
-        // // Q mimics the -ve part of a sine wave
-        // var q = (x) =>  -1 * Math.pow(1.1, Math.sin(x, Math.PI)) + 1;
-        // // R mimics the +ve part of a skewed sine wave
-        // var r = (x) =>  Math.pow(7, Math.sin(x, Math.PI)) - 1;
-        // // S mimics the -ve part of a skewed sine wave
-        // var s = (x) =>  -1 * Math.pow(1.1, Math.sin(x, Math.PI)) + 1;
-        // // T mimics a beta distribution
-        // var t = (x) =>  5 * Math.pow(x, 2) * (1-x);
-        // // pq, st, and tp segments mimic y=0
-        // var zero_segment = (x) => Math.random()/10;
 
-
-        var p = (x) => 2 * Math.pow(x, 3) * (1-x);
+        var p = (x) => 2 * Math.pow(x, 3) * (1-x) + Math.random()/10;
         // Q mimics the -ve part of a sine wave
-        var q = (x) =>  -1 * Math.pow(1.1, Math.sin(x, Math.PI)) + 1;
+        var q = (x) =>  -1 * Math.pow(1.1, Math.sin(x, Math.PI)) + 1 + Math.random()/10;
         // R mimics the +ve part of a skewed sine wave
-        var r = (x) =>  Math.pow(7, Math.sin(x, Math.PI)) - 1;
+        var r = (x) =>  Math.pow(7, Math.sin(x, Math.PI)) - 1 + Math.random()/10;
         // S mimics the -ve part of a skewed sine wave
-        var s = (x) =>  -1 * Math.pow(1.1, Math.sin(x, Math.PI)) + 1;
+        var s = (x) =>  -1 * Math.pow(1.1, Math.sin(x, Math.PI)) + 1 + Math.random()/10;
         // T mimics a beta distribution
-        var t = (x) =>  5 * Math.pow(x, 2) * (1-x);
+        var t = (x) =>  5 * Math.pow(x, 2) * (1-x) + Math.random()/10;
         // pq, st, and tp segments mimic y=0
         var zero_segment = (x) => Math.random()/10;
 
         // generate plot points for a single pqrst wave
         // y points for each segment
-        var p_y = this.norm_array.map(zero_segment);
+        var p_y = this.norm_array.map(p);
         var pq_y = this.norm_array.map(zero_segment);
         var q_y = this.norm_array.map(q);
         var r_y = this.norm_array.map(r);
@@ -265,8 +283,7 @@ class D3ECG {
         var s_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.s /this.k / sum_width_ratios);
         var st_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.st /this.k / sum_width_ratios);
         var t_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.t /this.k / sum_width_ratios);
-        var tp_x = this.norm_array.map(x => x * this.PQRST_WAVE_WIDTH_RATIOS.tp / this.k / sum_width_ratios);
-
+        var tp_x = this.norm_array.map(x =>  x * this.PQRST_WAVE_WIDTH_RATIOS.tp / this.k / sum_width_ratios);
 
         // Apply the wave offset + segment offset to each segment
         // i.e. t should start after r finishes, and r should start after s, etc.
