@@ -7,102 +7,89 @@ class D3ECG {
         this.h = 300
         this.w = 1000
         this.ref = ref
+        this.data_cursor = []
+        this.norm_array = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+        this.PQRST_WAVE_WIDTH_RATIOS = {
+            p: 12,
+            pq: 2,
+            q: 2,
+            r: 6,
+            s: 3,
+            st: 2,
+            t: 12,
+            tp: 30
+        };
     }
 
     drawECG(ref){
-
-        var h = this.h
-        var w = this.w
-        var wave = this._vfib  
+        this.generatePQRSTWave()
 
         var svg = d3.select(ref)
         .append("svg")
-        .attr("height", h)
-        .attr("width", w)
+        .attr("height", this.h)
+        .attr("width", this.w)
 
-        var x = d3.scaleLinear().domain([0, 100]).range([0, w]);
-        var y = d3.scaleLinear().domain([0, 100]).range([100, h]);
+        var x = d3.scaleLinear().domain([0, 1000]).range([0, this.w]);
+        var y = d3.scaleLinear().domain([0, 10]).range([this.h-150,0]);
 
         var line = d3.line()
         .x(function(d,i) {return x(i);})
-        .y(function(d) {return y(d);})
+        .y(function(d) {
+            console.log(y(d))
+            return y(d);
+        })
         .curve(d3.curveNatural)
 
-        function repeat(going){
+        var coming = svg.append("path")
+        .attr("d", line(this.data_cursor))
+        .attr("class","coming")
 
-            var data = wave()
-            var data2 = wave()
+    }
 
-            var coming = svg.append("path")
-            .attr("d", line(data))
 
-            var cl = coming.node().getTotalLength()
+    oximetry() {
 
-            coming
-            .attr("class","coming")
-            .attr("stroke-dasharray", cl)
-            .attr("stroke-dashoffset", cl)
-            .transition()
-            .duration(10000)
-            .ease(d3.easeLinear)
-            .attr("stroke-dashoffset", 0)
-
-            if(going){
-                going = going
-            } else {
-                var going = svg.append("path")
-                .attr("d", line(data2))
-            }
-
-            var gl = going.node().getTotalLength()
-
-            going
-            .attr("class", "going")
-            .attr("stroke-dasharray",  gl)
-            .attr("stroke-dashoffset", gl * 2)
-            .transition()
-            .duration(10000)
-            .ease(d3.easeLinear)
-            .attr("stroke-dashoffset", gl)
-            .on("end", function(){
-                d3.select(this).remove()
-                coming.attr("class","going")
-                repeat(coming)
-            })
+        while (this.data_cursor.length < 1000) {
+            this.norm_array.map((x) => this.data_cursor.push(Math.sin(x)))
         }
 
-        repeat();
     }
 
-
-    _oximetry() {
-        return d3.range(100).map(function(x){return 10*Math.sin(x) + 10*Math.random()})
+    vfib(){
+        return d3.range(1000).map(function(x){return -3*Math.pow(9, Math.sin(8*x, Math.PI)) - 1 + Math.random()*10});
     }
 
-    _vfib(){
-        return d3.range(100).map(function(x){return -3*Math.pow(9, Math.sin(8*x, Math.PI)) - 1 + Math.random()*10});
+    generatePQRSTWave() {
+        var p = (x) => 2 * Math.pow(x, 3) * (1-x);
+        var q = (x) =>  -1 * Math.pow(1.1, Math.sin(x, Math.PI)) + 1;
+        var r = (x) =>  Math.pow(7, Math.sin(x, Math.PI)) - 1;
+        var s = (x) =>  -1 * Math.pow(1.5, Math.sin(x, Math.PI)) + 1;
+        var t = (x) =>  5 * Math.pow(x, 2) * (1-x);
+        var zero_segment = (x) =>  0;
+
+        var p_y = d3.range(0,1,1/this.PQRST_WAVE_WIDTH_RATIOS.p).map(p);
+        var pq_y = d3.range(0,1,1/this.PQRST_WAVE_WIDTH_RATIOS.pq).map(zero_segment);
+        var q_y = d3.range(0,1,1/this.PQRST_WAVE_WIDTH_RATIOS.q).map(q);
+        var r_y = d3.range(0,1,1/this.PQRST_WAVE_WIDTH_RATIOS.r).map(r);
+        var s_y = d3.range(0,1,1/this.PQRST_WAVE_WIDTH_RATIOS.s).map(s);
+        var st_y = d3.range(0,1,1/this.PQRST_WAVE_WIDTH_RATIOS.st).map(zero_segment);
+        var t_y = d3.range(0,1,1/this.PQRST_WAVE_WIDTH_RATIOS.t).map(t);
+        var tp_y = d3.range(0,1,1/this.PQRST_WAVE_WIDTH_RATIOS.tp).map(zero_segment);
+
+        var y = [p_y, pq_y, q_y, r_y, s_y, st_y, t_y, tp_y].reduce((a, b) => a.concat(b), []);
+
+        while (this.data_cursor.length < 1000) {
+             y.map((i) => this.data_cursor.push(i))
+        }
+
     }
 
-    _sinus() {
-
-
-
-        var p = (x) => Math.pow(x/100, 3) * (1-x/100) + Math.random()/10;
-        // Q mimics the -ve part of a sine wave
-        var q = (x) =>  -1 * Math.pow(1.1, Math.sin(x, Math.PI)) + 1 + Math.random()/10;
-        // R mimics the +ve part of a skewed sine wave
-        var r = (x) =>  -4*Math.pow(9, Math.sin(10*x, Math.PI)) - 1 + Math.random()*10;
-        // S mimics the -ve part of a skewed sine wave
-        var s = (x) =>  -1 * Math.pow(1.1, Math.sin(x, Math.PI)) + 1 + Math.random()/10;
-        // T mimics a beta distribution
-        var t = (x) =>  5 * Math.pow(x, 2) * (1-x) + Math.random()/10;
-        // pq, st, and tp segments mimic y=0
-        var zero_segment = (x) => Math.random()/10;
-
-        var x = d3.range(100)
-
-        return x.map(r)
-
+    extObjectValues(obj) {
+        if (typeof obj.values === 'undefined') {
+            return Object.keys(obj).map(key => obj[key])
+        }
+        
+        return obj.values();
     }
 }
 
