@@ -15,7 +15,6 @@ class ECG extends React.Component {
 
   componentDidMount(){
       this.cardiac.drawECG(this.refs.cardiac)
-      this.oximetry.drawECG(this.refs.oximetry)
   }
 
 render() {

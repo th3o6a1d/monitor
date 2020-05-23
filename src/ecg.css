@@ -16,7 +16,7 @@
 }
 
 .going {
-  stroke: green;
+  stroke: red;
   fill:none;
   stroke-width: 4;
 }
