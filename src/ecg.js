@@ -8,9 +8,12 @@ class ECG extends React.Component {
 
   constructor(props){
       super(props);
+      this.viewBox = "0 0 1000 200"
+
       this.state = this.props.data
-      this.cardiac = new D3ECG("cardiac")
-      this.oximetry = new D3ECG("oximetry")
+      this.cardiac = new D3ECG("cardiac",{"wave":"capnography","rate":60})
+      this.oximetry = new D3ECG("cardiac",{"wave":"capnography","rate":60})
+
   }
 
   componentDidMount(){
@@ -20,8 +23,7 @@ class ECG extends React.Component {
 render() {
     return (
       <div>
-      <div ref="cardiac"/>
-      <div ref="oximetry"/>
+      <svg viewBox={this.viewBox} xmlns="http://www.w3.org/2000/svg" ref="cardiac"/>
       </div>
         );
     }

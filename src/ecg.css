@@ -3,20 +3,23 @@
   background-color:black;
 }
 
-.tracing {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: dash 5s linear alternate infinite;
-}
-
 .coming {
   stroke: green;
   fill:none;
   stroke-width: 4;
 }
 
+.hr {
+  fill:green;
+  font-size:100;
+}
+
+.capnography {
+  stroke: blue;
+}
+
 .going {
-  stroke: red;
+  stroke: green;
   fill:none;
   stroke-width: 4;
 }
