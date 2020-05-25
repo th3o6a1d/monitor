@@ -1,17 +1,43 @@
 
+html, body {
+  height:100%;
+}
+
 .monitor {
   background-color:black;
+  height:100%;
+  width:100%;
+  position:absolute;
+}
+
+.tracing-container {
+  width:80%;
+  height:100%;
+  float:left;
+  position: absolute;
+}
+
+.side {
+  border-bottom: 1px solid white;
+  border-left: 1px solid white;
+}
+
+.panel {
+  width:20%;
+  height:100%;
+  float:right;
+  background-color: black;
 }
 
 .coming {
   stroke: green;
   fill:none;
-  stroke-width: 4;
+  stroke-width: 2;
 }
 
 .hr {
   fill:green;
-  font-size:100;
+  font-size:120;
 }
 
 .capnography {
@@ -21,15 +47,5 @@
 .going {
   stroke: green;
   fill:none;
-  stroke-width: 4;
+  stroke-width: 2;
 }
-
-@keyframes dash {
-  from {
-    stroke-dashoffset: 100%;
-  }
-  to {
-    stroke-dashoffset: 0%;
-  }
-}
-

@@ -11,19 +11,31 @@ class ECG extends React.Component {
       this.viewBox = "0 0 1000 200"
 
       this.state = this.props.data
-      this.cardiac = new D3ECG("cardiac",{"wave":"capnography","rate":60})
-      this.oximetry = new D3ECG("cardiac",{"wave":"capnography","rate":60})
+      this.cardiac = new D3ECG("cardiac",{"wave":"afib","rate":60})
+      this.cap = new D3ECG("cap",{"wave":"afib","rate":60})
+      this.cap2 = new D3ECG("cap2",{"wave":"afib","rate":60})
 
   }
 
   componentDidMount(){
       this.cardiac.drawECG(this.refs.cardiac)
+      this.cap.drawECG(this.refs.cap)
+      this.cap2.drawECG(this.refs.cap2)
   }
 
 render() {
     return (
-      <div>
-      <svg viewBox={this.viewBox} xmlns="http://www.w3.org/2000/svg" ref="cardiac"/>
+      <div className="monitor">
+        <div className ="panel">
+          <svg className="side cardiac_side" viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg" ></svg>
+          <svg className="side cap_side" viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg" ></svg>
+          <svg className="side cap2_side" viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg" ></svg>
+        </div>
+        <div className="tracing-container">
+          <svg viewBox={this.viewBox} className="tracing" xmlns="http://www.w3.org/2000/svg" ref="cardiac"/>
+          <svg viewBox={this.viewBox} className="tracing" xmlns="http://www.w3.org/2000/svg" ref="cap"/>
+          <svg viewBox={this.viewBox} className="tracing" xmlns="http://www.w3.org/2000/svg" ref="cap2"/>
+        </div>
       </div>
         );
     }

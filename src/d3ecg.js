@@ -5,7 +5,7 @@ class D3ECG {
     constructor(ref,options) {
 
         /* wave options:
-        1. sinus, afib, svt, vtach, vfib, capnography, oximetry
+        1. sinus, afib, svt, vtach, vfib, cap, oximetry
         2. rate
         */
 
@@ -42,10 +42,22 @@ class D3ECG {
         }
     }
 
+    drawSidePanel(){    
+
+        console.log("." + this.ref + "_side")
+        var svg = d3.select("." + this.ref + "_side")
+        svg.selectAll("text").remove()
+        svg.append("text")
+            .attr("x",10)
+            .attr("y",25)
+            .text(this.rate)
+            .attr("class","hr")
+    }
+
     drawECG(ref){
 
         var svg = d3.select(ref)
-        var x = d3.scaleLinear().domain([0, 500]).range([0, this.w-200]);
+        var x = d3.scaleLinear().domain([0, 500]).range([0, this.w]);
         var y = d3.scaleLinear().domain([-5, 10]).range([this.h,0]);
 
         var line = d3.line()
@@ -55,18 +67,11 @@ class D3ECG {
 
         let repeat = (going) => {
 
+            this.drawSidePanel()
             this.fillDataCursor()
             var coming_data = this.data_cursor.slice(0,500)
             var going_data = this.data_cursor.slice(500,1000)
             this.data_cursor = this.data_cursor.slice(1000,this.data_cursor.length)
-
-            svg.select("text").remove()
-            svg.append("text")
-                .attr("x",825)
-                .attr("y",150)
-                .attr("font-size",100)
-                .text(this.rate)
-                .attr("class","hr")
 
             var coming = svg.append("path")
             .attr("d", line(coming_data))
@@ -114,10 +119,10 @@ class D3ECG {
             case "afib":
                 this.params.tp.duration = () => Math.random() * this.options.rate
                 break
-            case "capnography":
+            case "cap":
                 Object.values(this.params).map((i) => i.duration = () => 0)
                 this.params.z.duration = () => 100
-                this.params.z.fx = (x) => 2*Math.sin(2 * Math.PI * x) + Math.random()/5
+                this.params.z.fx = (x) => 2*Math.sin(2 * Math.PI * x)
                 break
         }
 
