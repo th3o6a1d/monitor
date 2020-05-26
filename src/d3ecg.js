@@ -34,6 +34,7 @@ class D3ECG {
             var bpm = Math.floor(60 / beatDuration)
             return bpm
         }
+
     }
 
     fillDataCursor(){
@@ -42,12 +43,23 @@ class D3ECG {
         }
     }
 
+    drawBottomPanel(){    
+
+        var svg = d3.select(".bottom-panel")
+            svg.selectAll("text").remove()
+            svg.append("text")
+            .attr("x",10)
+            .attr("y",25)
+            .text("test")
+            .attr("class","hr")
+    }
+
+
     drawSidePanel(){    
 
-        console.log("." + this.ref + "_side")
         var svg = d3.select("." + this.ref + "_side")
-        svg.selectAll("text").remove()
-        svg.append("text")
+            svg.selectAll("text").remove()
+            svg.append("text")
             .attr("x",10)
             .attr("y",25)
             .text(this.rate)
@@ -114,29 +126,32 @@ class D3ECG {
 
     generateWave() {
 
-        switch(this.options.wave){
+            switch(this.options.wave){
 
-            case "afib":
-                this.params.tp.duration = () => Math.random() * this.options.rate
-                break
-            case "cap":
-                Object.values(this.params).map((i) => i.duration = () => 0)
-                this.params.z.duration = () => 100
-                this.params.z.fx = (x) => 2*Math.sin(2 * Math.PI * x)
-                break
-        }
+                case "sinus":
+                    this.params.tp.duration = () => this.options.rate
+                    break
+                case "afib":
+                    this.params.tp.duration = () => Math.random() * this.options.rate
+                    break
+                case "cap":
+                    Object.values(this.params).map((i) => i.duration = () => 0)
+                    this.params.z.duration = () => 100
+                    this.params.z.fx = (x) => 2*Math.sin(2 * Math.PI * x)
+                    break
+            }
 
-        var p_y = d3.range(0,1,1/this.params.p.duration()).map(this.params.p.fx);
-        var pq_y = d3.range(0,1,1/this.params.pq.duration()).map(this.params.pq.fx);
-        var q_y = d3.range(0,1,1/this.params.q.duration()).map(this.params.q.fx);
-        var r_y = d3.range(0,1,1/this.params.r.duration()).map(this.params.r.fx);
-        var s_y = d3.range(0,1,1/this.params.s.duration()).map(this.params.s.fx);
-        var st_y = d3.range(0,1,1/this.params.st.duration()).map(this.params.st.fx);
-        var t_y = d3.range(0,1,1/this.params.t.duration()).map(this.params.t.fx);
-        var tp_y = d3.range(0,1,1/this.params.tp.duration()).map(this.params.tp.fx);
-        var z_y = d3.range(0,1,1/this.params.z.duration()).map(this.params.z.fx);
-        var y = [p_y, pq_y, q_y, r_y, s_y, st_y, t_y, tp_y, z_y].reduce((a, b) => a.concat(b), []);
-        return y
+            var p_y = d3.range(0,1,1/this.params.p.duration()).map(this.params.p.fx);
+            var pq_y = d3.range(0,1,1/this.params.pq.duration()).map(this.params.pq.fx);
+            var q_y = d3.range(0,1,1/this.params.q.duration()).map(this.params.q.fx);
+            var r_y = d3.range(0,1,1/this.params.r.duration()).map(this.params.r.fx);
+            var s_y = d3.range(0,1,1/this.params.s.duration()).map(this.params.s.fx);
+            var st_y = d3.range(0,1,1/this.params.st.duration()).map(this.params.st.fx);
+            var t_y = d3.range(0,1,1/this.params.t.duration()).map(this.params.t.fx);
+            var tp_y = d3.range(0,1,1/this.params.tp.duration()).map(this.params.tp.fx);
+            var z_y = d3.range(0,1,1/this.params.z.duration()).map(this.params.z.fx);
+            var y = [p_y, pq_y, q_y, r_y, s_y, st_y, t_y, tp_y, z_y].reduce((a, b) => a.concat(b), []);
+            return y
 
     }
 

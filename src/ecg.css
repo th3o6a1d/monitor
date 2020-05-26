@@ -12,10 +12,25 @@ html, body {
 
 .tracing-container {
   width:80%;
-  height:100%;
   float:left;
-  position: absolute;
+
 }
+
+.button {
+  font-size: 100px;
+  color:white;
+}
+
+.bottom-panel {
+  background-color:red;
+  float: left;
+}
+
+.bottom-text {
+    font-size: 100px;
+    color:white;
+}
+
 
 .side {
   border-bottom: 1px solid white;
@@ -24,7 +39,6 @@ html, body {
 
 .panel {
   width:20%;
-  height:100%;
   float:right;
   background-color: black;
 }

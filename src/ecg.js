@@ -11,30 +11,34 @@ class ECG extends React.Component {
       this.viewBox = "0 0 1000 200"
 
       this.state = this.props.data
-      this.cardiac = new D3ECG("cardiac",{"wave":"afib","rate":60})
-      this.cap = new D3ECG("cap",{"wave":"afib","rate":60})
-      this.cap2 = new D3ECG("cap2",{"wave":"afib","rate":60})
+      this.telemetry = new D3ECG("telemetry",{"wave":"sinus","rate":60})
+      this.oximetry = new D3ECG("oximetry",{"wave":"afib","rate":60})
+      this.capnometry = new D3ECG("capnometry",{"wave":"capnometry","rate":60})
 
   }
 
   componentDidMount(){
-      this.cardiac.drawECG(this.refs.cardiac)
-      this.cap.drawECG(this.refs.cap)
-      this.cap2.drawECG(this.refs.cap2)
+      this.telemetry.drawECG(this.refs.telemetry)
+      this.oximetry.drawECG(this.refs.oximetry)
+      this.capnometry.drawECG(this.refs.capnometry)
+      this.telemetry.drawBottomPanel(this.refs.bp)
   }
 
 render() {
     return (
       <div className="monitor">
         <div className ="panel">
-          <svg className="side cardiac_side" viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg" ></svg>
-          <svg className="side cap_side" viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg" ></svg>
-          <svg className="side cap2_side" viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg" ></svg>
+          <svg className="side telemetry_side" viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg"></svg>
+          <svg className="side oximetry_side" viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg"></svg>
+          <svg className="side capnometry_side" viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg"></svg>
         </div>
         <div className="tracing-container">
-          <svg viewBox={this.viewBox} className="tracing" xmlns="http://www.w3.org/2000/svg" ref="cardiac"/>
-          <svg viewBox={this.viewBox} className="tracing" xmlns="http://www.w3.org/2000/svg" ref="cap"/>
-          <svg viewBox={this.viewBox} className="tracing" xmlns="http://www.w3.org/2000/svg" ref="cap2"/>
+          <svg viewBox={this.viewBox} className="tracing" xmlns="http://www.w3.org/2000/svg" ref="telemetry"/>
+          <svg viewBox={this.viewBox} className="tracing" xmlns="http://www.w3.org/2000/svg" ref="oximetry"/>
+          <svg viewBox={this.viewBox} className="tracing" xmlns="http://www.w3.org/2000/svg" ref="capnometry"/>
+        </div>
+        <div className="bottom-panel">
+          <svg viewBox="0 0 1000 200" className="bottom-text" xmlns="http://www.w3.org/2000/svg" ref="bp"></svg>
         </div>
       </div>
         );
