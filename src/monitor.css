@@ -22,22 +22,26 @@ html, body {
 }
 
 .bottom-panel {
-  background-color:red;
   float: left;
+  height:100%;
+  width: 100%;
+}
+
+.bottom-item {
+  float:left;
 }
 
 .bottom-text {
-    font-size: 100px;
-    color:white;
+  fill:green;
+  font-size:120;
 }
-
 
 .side {
   border-bottom: 1px solid white;
   border-left: 1px solid white;
 }
 
-.panel {
+.side-panel {
   width:20%;
   float:right;
   background-color: black;
@@ -49,7 +53,7 @@ html, body {
   stroke-width: 2;
 }
 
-.hr {
+.side-text {
   fill:green;
   font-size:120;
 }

@@ -1,18 +1,14 @@
 import * as d3 from "d3";
+import D3MONITOR from './d3monitor';
 
-class D3ECG {
+class D3WAVE {
 
-    constructor(ref,options) {
+    constructor(options) {
 
-        /* wave options:
-        1. sinus, afib, svt, vtach, vfib, cap, oximetry
-        2. rate
-        */
-
+        this.options = options
         this.h = 200
         this.w = 1000
-        this.ref = ref
-        this.options = options
+        this.type = this.options.type
         this.segmentDuration = 5000
         this.data_cursor = []
 
@@ -35,6 +31,8 @@ class D3ECG {
             return bpm
         }
 
+        setInterval(()=>this.updateSidePanel(),2000)
+
     }
 
     fillDataCursor(){
@@ -43,32 +41,30 @@ class D3ECG {
         }
     }
 
-    drawBottomPanel(){    
 
-        var svg = d3.select(".bottom-panel")
-            svg.selectAll("text").remove()
-            svg.append("text")
-            .attr("x",10)
-            .attr("y",25)
-            .text("test")
-            .attr("class","hr")
+    updateSidePanel() {
+        var txt = d3.select("." + this.options.name + ".side-text")
+                    .text(this.rate)
     }
-
 
     drawSidePanel(){    
-
-        var svg = d3.select("." + this.ref + "_side")
-            svg.selectAll("text").remove()
-            svg.append("text")
-            .attr("x",10)
-            .attr("y",25)
-            .text(this.rate)
-            .attr("class","hr")
+        var svg = d3.select(".side-panel")
+                .append("svg")
+                .attr("viewBox","0 0 50 40")
+                .append("text")
+                .attr("x",10)
+                .attr("y",25)
+                .text("--")
+                .attr("class",this.options.name + " side-text")
     }
 
-    drawECG(ref){
+    drawTracing(type){
 
-        var svg = d3.select(ref)
+        var svg = d3.select(".tracing-container")
+            .append("svg")
+            .attr("viewBox","0 0 1000 200")
+            .attr("className","tracing " + this.type)
+        
         var x = d3.scaleLinear().domain([0, 500]).range([0, this.w]);
         var y = d3.scaleLinear().domain([-5, 10]).range([this.h,0]);
 
@@ -79,15 +75,14 @@ class D3ECG {
 
         let repeat = (going) => {
 
-            this.drawSidePanel()
             this.fillDataCursor()
             var coming_data = this.data_cursor.slice(0,500)
             var going_data = this.data_cursor.slice(500,1000)
             this.data_cursor = this.data_cursor.slice(1000,this.data_cursor.length)
 
             var coming = svg.append("path")
-            .attr("d", line(coming_data))
-            var cl = coming.node().getTotalLength()
+                .attr("d", line(coming_data))
+                var cl = coming.node().getTotalLength()
 
             coming
                 .attr("class","coming")
@@ -159,4 +154,4 @@ class D3ECG {
 
 
 
-export default D3ECG
+export default D3WAVE
