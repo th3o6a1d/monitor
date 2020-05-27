@@ -8,9 +8,7 @@ function App() {
 
   return (
     <div className="App" >
-      <div className="monitor">
-      	<Monitor data={initialData}/>
-      </div>
+      	<Monitor/>
     </div>
   );
 }

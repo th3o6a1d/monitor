@@ -20,7 +20,7 @@ class D3WAVE {
             s: { duration: () => 3, fx: (x) =>  -1 * Math.pow(1.5, Math.sin(x, Math.PI)) + 1},
             st: { duration: () => 12, fx: (x) =>  0},
             t: { duration: () => 12, fx: (x) =>  5 * Math.pow(x, 2) * (1-x)},
-            tp: { duration: () => 60, fx: (x) =>  0},
+            tp: { duration: () => 50, fx: (x) =>  0},
             z: {duration: ()=> 0, fx: (x) => 0}
         };
 
@@ -31,42 +31,80 @@ class D3WAVE {
             return bpm
         }
 
-        setInterval(()=>this.updateSidePanel(),2000)
+        this.o2 = () => {
+            if (this.options.o2range) {
+                var min = this.options.o2range[0] 
+                var max = this.options.o2range[1]
+                var range = max - min
+                return Math.floor(min + range * Math.random())
+            }
+            return Math.floor(5 * Math.random() + 95)
+        }
+
+        setInterval(()=>this.updateSidePanel(),4000)
 
     }
 
     fillDataCursor(){
-        while (this.data_cursor.length < 1100) {
-            this.generateWave().map((i) => this.data_cursor.push(i))
+        while (this.data_cursor.length < 600) {
+            this._generateWave().map((i) => this.data_cursor.push(i))
         }
     }
 
 
     updateSidePanel() {
-        var txt = d3.select("." + this.options.name + ".side-text")
-                    .text(this.rate)
+        var txt = d3.select("." + this.options.type + "-side-text")
+        switch(this.options.type){
+            case "cardiac":
+                txt.text(this.rate)
+                break
+            case "oximetry":
+                txt.text(this.o2)
+                break
+        }
     }
 
     drawSidePanel(){    
         var svg = d3.select(".side-panel")
+                .append("div")
+                .attr("maxHeight","100px")
                 .append("svg")
                 .attr("viewBox","0 0 50 40")
-                .append("text")
+                
+                svg.append("text")
                 .attr("x",10)
                 .attr("y",25)
                 .text("--")
-                .attr("class",this.options.name + " side-text")
+                .attr("class",this.options.type + "-side-text")
+
+        switch(this.options.type){
+            case "cardiac":
+                svg.append("text")
+                .attr("x",3)
+                .attr("y",10)
+                .text("ECG")
+                .attr("class",this.options.type + "-legend-text")
+            break
+
+            case "oximetry":
+                svg.append("text")
+                .attr("x",3)
+                .attr("y",10)
+                .text("PLETH")
+                .attr("class",this.options.type + "-legend-text")
+            break
+        }
     }
 
-    drawTracing(type){
+    drawTracing(){
 
         var svg = d3.select(".tracing-container")
             .append("svg")
             .attr("viewBox","0 0 1000 200")
-            .attr("className","tracing " + this.type)
+            .attr("className","no-cpu tracing")
         
-        var x = d3.scaleLinear().domain([0, 500]).range([0, this.w]);
-        var y = d3.scaleLinear().domain([-5, 10]).range([this.h,0]);
+        var x = d3.scaleLinear().domain([0, 250]).range([30, this.w]);
+        var y = d3.scaleLinear().domain([-2, 4]).range([this.h,0]);
 
         var line = d3.line()
             .x(function(d,i) {return x(i);})
@@ -76,16 +114,17 @@ class D3WAVE {
         let repeat = (going) => {
 
             this.fillDataCursor()
-            var coming_data = this.data_cursor.slice(0,500)
-            var going_data = this.data_cursor.slice(500,1000)
-            this.data_cursor = this.data_cursor.slice(1000,this.data_cursor.length)
+            var coming_data = this.data_cursor.slice(0,250)
+            var going_data = this.data_cursor.slice(250,500)
+            this.data_cursor = this.data_cursor.slice(500,this.data_cursor.length)
 
             var coming = svg.append("path")
                 .attr("d", line(coming_data))
+
                 var cl = coming.node().getTotalLength()
 
             coming
-                .attr("class","coming")
+                .attr("class",this.options.type + " coming")
                 .attr("stroke-dasharray", cl)
                 .attr("stroke-dashoffset", cl)
                 .transition()
@@ -97,13 +136,15 @@ class D3WAVE {
                 var going = going
             } else {
                 var going = svg.append("path")
-                .attr("d", line(going_data))               
+                .attr("d", line(going_data))   
+                .attr("class",this.options.type + " going")    
             }
 
             var gl = going.node().getTotalLength()
 
-            going
-                .attr("class", "going")
+            // console.log("Number of paths: " + d3.selectAll("path")._groups[0].length)
+
+            going        
                 .attr("stroke-dasharray",  gl)
                 .attr("stroke-dashoffset", gl * 2)
                 .transition()
@@ -112,14 +153,15 @@ class D3WAVE {
                 .attr("stroke-dashoffset", gl)
                 .on("end",function(){
                     svg.select(".going").remove()
-                    coming.attr("class","going")
+                    coming.classed("going",true)
+                    coming.classed("coming",false)
                     repeat(coming)
                 })
         }
         repeat()
     }
 
-    generateWave() {
+    _generateWave() {
 
             switch(this.options.wave){
 
@@ -129,22 +171,21 @@ class D3WAVE {
                 case "afib":
                     this.params.tp.duration = () => Math.random() * this.options.rate
                     break
-                case "cap":
+                case "oximetry":
                     Object.values(this.params).map((i) => i.duration = () => 0)
-                    this.params.z.duration = () => 100
-                    this.params.z.fx = (x) => 2*Math.sin(2 * Math.PI * x)
+                    this.params.z = { duration: () => 101, fx: (x) => -Math.sin(x*Math.PI*2)/2 - 2*Math.sin(12.5*x-Math.PI)/2 +1}
                     break
             }
 
-            var p_y = d3.range(0,1,1/this.params.p.duration()).map(this.params.p.fx);
-            var pq_y = d3.range(0,1,1/this.params.pq.duration()).map(this.params.pq.fx);
-            var q_y = d3.range(0,1,1/this.params.q.duration()).map(this.params.q.fx);
-            var r_y = d3.range(0,1,1/this.params.r.duration()).map(this.params.r.fx);
-            var s_y = d3.range(0,1,1/this.params.s.duration()).map(this.params.s.fx);
-            var st_y = d3.range(0,1,1/this.params.st.duration()).map(this.params.st.fx);
-            var t_y = d3.range(0,1,1/this.params.t.duration()).map(this.params.t.fx);
-            var tp_y = d3.range(0,1,1/this.params.tp.duration()).map(this.params.tp.fx);
-            var z_y = d3.range(0,1,1/this.params.z.duration()).map(this.params.z.fx);
+            var p_y = d3.range(0,1,1/this.params.p.duration()*2).map(this.params.p.fx);
+            var pq_y = d3.range(0,1,1/this.params.pq.duration()*2).map(this.params.pq.fx);
+            var q_y = d3.range(0,1,1/this.params.q.duration()*2).map(this.params.q.fx);
+            var r_y = d3.range(0,1,1/this.params.r.duration()*2).map(this.params.r.fx);
+            var s_y = d3.range(0,1,1/this.params.s.duration()*2).map(this.params.s.fx);
+            var st_y = d3.range(0,1,1/this.params.st.duration()*2).map(this.params.st.fx);
+            var t_y = d3.range(0,1,1/this.params.t.duration()*2).map(this.params.t.fx);
+            var tp_y = d3.range(0,1,1/this.params.tp.duration()*2).map(this.params.tp.fx);
+            var z_y = d3.range(0,1,1/this.params.z.duration()*2).map(this.params.z.fx);
             var y = [p_y, pq_y, q_y, r_y, s_y, st_y, t_y, tp_y, z_y].reduce((a, b) => a.concat(b), []);
             return y
 

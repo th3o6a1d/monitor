@@ -23,11 +23,10 @@ class D3MONITOR {
     	b.map((i) => {
 	        var div = d3.select(".bottom-panel")
 	        	.append("div")
-	        	.attr("width",width)
-
-	        div
+	        	.attr("class","bottom-item")
+	        	.style("width",width)
 	        	.append("svg")
-	        	.attr("viewBox","0 0 100 100")
+	        	.attr("viewBox","0 0 100 50")
 	        	.append("text")
 				.attr("x",10)
                 .attr("y",25)
