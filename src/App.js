@@ -1,9 +1,6 @@
 import React from 'react';
 import Monitor from './monitor';
 
-
-const initialData = {}
-
 function App() {
 
   return (

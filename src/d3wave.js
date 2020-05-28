@@ -1,5 +1,4 @@
 import * as d3 from "d3";
-import D3MONITOR from './d3monitor';
 
 class D3WAVE {
 
@@ -61,39 +60,37 @@ class D3WAVE {
             case "oximetry":
                 txt.text(this.o2)
                 break
+            default:
+                return
         }
     }
 
     drawSidePanel(){    
-        var svg = d3.select(".side-panel")
-                .append("div")
-                .attr("maxHeight","100px")
+             var svg = d3.select(".side-panel")
                 .append("svg")
                 .attr("viewBox","0 0 50 40")
-                
-                svg.append("text")
-                .attr("x",10)
+
+            svg.append("text")
+                .attr("x",15)
                 .attr("y",25)
                 .text("--")
-                .attr("class",this.options.type + "-side-text")
+                .attr("class",() => this.options.type + "-side-text")
 
-        switch(this.options.type){
-            case "cardiac":
-                svg.append("text")
+            svg.append("text")
                 .attr("x",3)
                 .attr("y",10)
-                .text("ECG")
-                .attr("class",this.options.type + "-legend-text")
-            break
+                .text(() => {
+                    switch(this.options.type){
+                        case "cardiac":
+                            return "ECG"
+                        case "oximetry":
+                            return "PLETH"
+                        default: 
+                            return "--"
+                    }
+                })
+                .attr("class",() => this.options.type + "-legend-text")
 
-            case "oximetry":
-                svg.append("text")
-                .attr("x",3)
-                .attr("y",10)
-                .text("PLETH")
-                .attr("class",this.options.type + "-legend-text")
-            break
-        }
     }
 
     drawTracing(){
@@ -111,7 +108,7 @@ class D3WAVE {
             .y(function(d) {return y(d);})
             .curve(d3.curveNatural)
 
-        let repeat = (going) => {
+        let repeat = (went) => {
 
             this.fillDataCursor()
             var coming_data = this.data_cursor.slice(0,250)
@@ -132,17 +129,15 @@ class D3WAVE {
                 .ease(d3.easeLinear)
                 .attr("stroke-dashoffset", 0)
 
-            if(going){
-                var going = going
+            if (went) {
+                var going = went
             } else {
-                var going = svg.append("path")
+                going = svg.append("path")
                 .attr("d", line(going_data))   
                 .attr("class",this.options.type + " going")    
             }
 
             var gl = going.node().getTotalLength()
-
-            // console.log("Number of paths: " + d3.selectAll("path")._groups[0].length)
 
             going        
                 .attr("stroke-dasharray",  gl)
@@ -166,7 +161,7 @@ class D3WAVE {
             switch(this.options.wave){
 
                 case "sinus":
-                    this.params.tp.duration = () => this.options.rate
+                    this.params.tp.duration = () => this.options.rate + Math.floor(Math.random()*20)
                     break
                 case "afib":
                     this.params.tp.duration = () => Math.random() * this.options.rate
@@ -174,6 +169,8 @@ class D3WAVE {
                 case "oximetry":
                     Object.values(this.params).map((i) => i.duration = () => 0)
                     this.params.z = { duration: () => 101, fx: (x) => -Math.sin(x*Math.PI*2)/2 - 2*Math.sin(12.5*x-Math.PI)/2 +1}
+                    break
+                default:
                     break
             }
 

@@ -34,13 +34,6 @@ html, body {
   color:white;
 }
 
-.bottom-panel {
-  float: left;
-  background-color: black;
-  height: 40%;
-  width: 100%;
-}
-
 .bottom-item {
   float:left;
 }
@@ -91,4 +84,19 @@ html, body {
 .oximetry-legend-text {
   fill:#29d1ff;
   font-size:5px;
+}
+
+.bp-bottom-text {
+  fill:#de31d2;
+  font-size:50px;
+}
+
+.bottom-legend {
+  fill:#de31d2;
+}
+
+.bottom-panel {
+  float: left;
+  background-color: black;
+  width: 100%;
 }

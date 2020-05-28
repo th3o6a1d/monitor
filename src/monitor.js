@@ -16,6 +16,7 @@ class Monitor extends React.Component {
                     ],
                 "bottom": [
                     {"type":"bp","value":"120/80"},
+                    {"type":"bp","value":"120/80"},
                     {"type":"bp","value":"120/80"}
                     ]
               }

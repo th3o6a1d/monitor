@@ -5,39 +5,52 @@ class D3MONITOR {
 	
  	constructor(options) {
  		this.options = options
- 		this.tracings = []
  	}
 
  	initialize() {
- 		this.options.tracings.map((t,i) => {
+ 		this.options.tracings = this.options.tracings.map((t,i) => {
  			t.name = "tracing" + i
- 			this.tracings.push(new D3WAVE(t))
+ 			var tracing = new D3WAVE(t)
+ 			tracing.drawTracing()
+ 			tracing.drawSidePanel()
+ 			return tracing
  		})
- 		this.tracings.map((t) => t.drawTracing())
- 		this.tracings.map((t) => t.drawSidePanel())
- 		this.drawBottomPanel(this.options.bottom)
+ 		this.drawBottomPanel()
+ 		this.updateBottomPanel()
  	}
-
-    drawBottomPanel(b){   
-    	var width = Math.round(100/b.length) + "%"
-    	b.map((i) => {
-	        var div = d3.select(".bottom-panel")
-	        	.append("div")
-	        	.attr("class","bottom-item")
-	        	.style("width",width)
-	        	.append("svg")
-	        	.attr("viewBox","0 0 100 50")
-	        	.append("text")
-				.attr("x",10)
-                .attr("y",25)
-	        	.text(i.value)
-	        	.attr("class","bottom-text")
-    	})
-    }
 
  	update() {
  		this.tracings.map((t,i) => t.options = this.options.tracings[i])
  	}
+
+
+    drawBottomPanel(){
+    	var count = this.options.bottom.length
+    	
+		d3.select(".bottom-panel")
+    		.selectAll("div")
+    		.data(this.options.bottom)
+    		.enter()
+    		.append("svg")
+	       	.attr("viewBox","0 0 200 25")
+	       	.attr("height","100")
+	       	.attr("width",(d)=>100/count +"%")
+    		.append("text")
+    		.attr("x",10)
+    		.attr("y",15)
+    		.text((d)=> d.value)
+    		.attr("class",(d) => d.type + "-bottom-text")
+    }
+
+    updateBottomText(i){
+    	return i.value
+    }
+
+    updateBottomPanel(){   
+     	var svg = d3.selectAll(".bottom-item")
+    }
+
+
 }
 
 export default D3MONITOR
