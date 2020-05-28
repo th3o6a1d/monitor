@@ -17,37 +17,56 @@ class D3MONITOR {
  		})
  		this.drawBottomPanel()
  		this.updateBottomPanel()
- 	}
-
- 	update() {
- 		this.tracings.map((t,i) => t.options = this.options.tracings[i])
+ 		setInterval(()=>this.updateBottomPanel(),10000)
  	}
 
 
     drawBottomPanel(){
     	var count = this.options.bottom.length
+    	var legend_text = {"bp":"NIBP","temp":"°C","rr":"RR"}
     	
-		d3.select(".bottom-panel")
+		var svg = d3.select(".bottom-panel")
     		.selectAll("div")
     		.data(this.options.bottom)
     		.enter()
     		.append("svg")
+    		.attr("class","bottom-item")
 	       	.attr("viewBox","0 0 200 25")
-	       	.attr("height","100")
+	       	.attr("height","200")
 	       	.attr("width",(d)=>100/count +"%")
-    		.append("text")
-    		.attr("x",10)
-    		.attr("y",15)
+
+    	svg.append("text")
+    		.attr("x",100)
+    		.attr("y",50)
     		.text((d)=> d.value)
-    		.attr("class",(d) => d.type + "-bottom-text")
+    		.attr("class",(d) => d.type + "-bottom-text " + "bottom-text")
+    		.style("text-anchor","middle")
+
+        svg.append("text")
+    		.attr("x",170)
+    		.attr("y",0)
+    		.text((d)=> legend_text[d.type])
+    		.attr("class",(d) => d.type + "-bottom-legend")
+    		.style("text-anchor","end")
     }
 
     updateBottomText(i){
+    	switch(i.type){
+    		case "bp":
+    			return Math.floor(120 + (Math.random() - 1) * 10) + "/" + Math.floor(80 + (Math.random() - 1))
+    		case "temp":
+    			return 37.7 + Math.round(Math.random() - 1,1)
+    		case "rr":
+    			return 16 + Math.round(Math.random() - 1,1)
+    	}
     	return i.value
     }
 
     updateBottomPanel(){   
      	var svg = d3.selectAll(".bottom-item")
+     		.data(this.options.bottom)
+     		.selectAll(".bottom-text")
+     		.text(this.updateBottomText)
     }
 
 

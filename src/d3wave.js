@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import {squareWave} from "g.js";
 
 class D3WAVE {
 
@@ -23,23 +24,6 @@ class D3WAVE {
             z: {duration: ()=> 0, fx: (x) => 0}
         };
 
-        this.rate = () => {
-            var beatDurationPerSegment = Object.values(this.params).reduce((acc,i) => acc + i.duration(),0.0) / 500
-            var beatDuration = beatDurationPerSegment * (this.segmentDuration/1000)
-            var bpm = Math.floor(60 / beatDuration)
-            return bpm
-        }
-
-        this.o2 = () => {
-            if (this.options.o2range) {
-                var min = this.options.o2range[0] 
-                var max = this.options.o2range[1]
-                var range = max - min
-                return Math.floor(min + range * Math.random())
-            }
-            return Math.floor(5 * Math.random() + 95)
-        }
-
         setInterval(()=>this.updateSidePanel(),4000)
 
     }
@@ -51,45 +35,69 @@ class D3WAVE {
     }
 
 
-    updateSidePanel() {
-        var txt = d3.select("." + this.options.type + "-side-text")
-        switch(this.options.type){
+    updateSidePanelText(d){
+        switch(d.type){
             case "cardiac":
-                txt.text(this.rate)
-                break
+                var beatDurationPerSegment = Object.values(this.params).reduce((acc,i) => acc + i.duration(),0.0) / 500
+                var beatDuration = beatDurationPerSegment * (this.segmentDuration/1000)
+                var bpm = Math.floor(60 / beatDuration)
+                return bpm
             case "oximetry":
-                txt.text(this.o2)
+                if (d.o2range) {
+                    var min = this.options.o2range[0] 
+                    var max = this.options.o2range[1]
+                    var range = max - min
+                    return Math.floor(min + range * Math.random())
+                }
+                return Math.floor(5 * Math.random() + 95)
+                break
+            case "capnography":
+                return Math.floor(30+Math.random()*10)
                 break
             default:
                 return
-        }
+        }     
+    }
+
+    updateSidePanel() {
+        d3.select("." + this.options.type + "-side-text")
+            .data([this.options])
+            .text((d)=>this.updateSidePanelText(d))
     }
 
     drawSidePanel(){    
-             var svg = d3.select(".side-panel")
+            var sidePanelText = {"cardiac":"ECG","oximetry":"PLETH","capnography":"ETCO2"}
+
+            var svg = d3.select(".side-panel")
                 .append("svg")
                 .attr("viewBox","0 0 50 40")
+            
+            svg.data([this.options])
+                .enter()
 
             svg.append("text")
                 .attr("x",15)
                 .attr("y",25)
                 .text("--")
-                .attr("class",() => this.options.type + "-side-text")
+                .attr("class",(d) => d.type + "-side-text")
 
             svg.append("text")
                 .attr("x",3)
                 .attr("y",10)
-                .text(() => {
-                    switch(this.options.type){
-                        case "cardiac":
-                            return "ECG"
-                        case "oximetry":
-                            return "PLETH"
-                        default: 
-                            return "--"
-                    }
-                })
-                .attr("class",() => this.options.type + "-legend-text")
+                .text((d)=>sidePanelText[d.type])
+                .attr("class",(d) => d.type + "-legend-text")
+
+    }
+
+    
+    decorateTracing(){
+        var tracing = d3.select("." + this.options.type + "-tracing")
+            .append("line")
+            .attr("x1",5)
+            .attr("x2",100)
+            .attr("y1",10)
+            .attr("y2",10)
+            .attr("class",this.options.type)
 
     }
 
@@ -98,8 +106,10 @@ class D3WAVE {
         var svg = d3.select(".tracing-container")
             .append("svg")
             .attr("viewBox","0 0 1000 200")
-            .attr("className","no-cpu tracing")
+            .attr("className",this.options.type + "-tracing no-cpu")
         
+        this.decorateTracing()
+
         var x = d3.scaleLinear().domain([0, 250]).range([30, this.w]);
         var y = d3.scaleLinear().domain([-2, 4]).range([this.h,0]);
 
@@ -109,6 +119,7 @@ class D3WAVE {
             .curve(d3.curveNatural)
 
         let repeat = (went) => {
+
 
             this.fillDataCursor()
             var coming_data = this.data_cursor.slice(0,250)
@@ -169,6 +180,11 @@ class D3WAVE {
                 case "oximetry":
                     Object.values(this.params).map((i) => i.duration = () => 0)
                     this.params.z = { duration: () => 101, fx: (x) => -Math.sin(x*Math.PI*2)/2 - 2*Math.sin(12.5*x-Math.PI)/2 +1}
+                    break
+                case "capnography":
+                    Object.values(this.params).map((i) => i.duration = () => 0)
+                    this.params.z = { duration: () => 160, fx: (x) => (Math.sin(x*2.0*Math.PI) + Math.sin(2.95*Math.PI*2*x)/3 + Math.random()/100+ Math.sin(5*2*Math.PI*x)/5 + Math.sin(8*Math.PI*x)/7 + Math.sin(9*x *Math.PI)/9 + Math.sin(11*Math.PI*x)/11)*1.1}
+                    this.params.z = { duration: () => 160, fx: (x) => squareWave(x + Math.random()/100)}
                     break
                 default:
                     break

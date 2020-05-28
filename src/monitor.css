@@ -70,6 +70,23 @@ html, body {
   font-size:5px;
 }
 
+.capnography {
+  fill:none;
+  stroke: #ecf542;
+  stroke-width: 3;
+}
+
+.capnography-side-text {
+  fill:#ecf542;
+  font-size:120;
+}
+
+.capnography-legend-text {
+  fill:#ecf542;
+  font-size:5px;
+}
+
+
 .oximetry {
   fill:none;
   stroke: #29d1ff;
@@ -91,12 +108,33 @@ html, body {
   font-size:50px;
 }
 
-.bottom-legend {
+.bp-bottom-legend {
   fill:#de31d2;
 }
+
+.temp-bottom-text {
+  fill:#f54242;
+  font-size:50px;
+}
+
+.temp-bottom-legend {
+  fill:#f54242;
+  font-size:20px;
+}
+
+.rr-bottom-text {
+  fill:#f5f7f7;
+  font-size:50px;
+}
+
+.rr-bottom-legend {
+  fill:#f5f7f7;
+}
+
 
 .bottom-panel {
   float: left;
   background-color: black;
   width: 100%;
+  height:100%;
 }
