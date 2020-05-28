@@ -11,9 +11,9 @@ class Monitor extends React.Component {
     this.options = 
               { 
                 "tracings": [
-                    {"type":"cardiac","wave":"sinus","rate":20},
+                    {"type":"cardiac","wave":"afib","rate":20},
                     {"type":"oximetry","wave":"oximetry","o2range":[95,100]},
-                    {"type":"capnography","wave":"capnography"},
+                    // {"type":"capnography","wave":"capnography"},
                     ],
                 "bottom": [
                     {"type":"bp","value":"120/80"},
@@ -32,6 +32,7 @@ class Monitor extends React.Component {
   render() {
     return (
       <div className="monitor no-cpu">
+        <div className="top panel"/>
         <div className="side-panel"/>
         <div className="tracing-container"/>
         <div className="bottom-panel"/>

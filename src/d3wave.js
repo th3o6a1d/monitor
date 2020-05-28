@@ -66,7 +66,8 @@ class D3WAVE {
     }
 
     drawSidePanel(){    
-            var sidePanelText = {"cardiac":"ECG","oximetry":"PLETH","capnography":"ETCO2"}
+            var sidePanelText = {"cardiac":"ECG","oximetry":"SPO2","capnography":"ETCO2"}
+            var sidePanelText2 = {"cardiac":"bpm","oximetry":"","capnography":""}
 
             var svg = d3.select(".side-panel")
                 .append("svg")
@@ -76,7 +77,7 @@ class D3WAVE {
                 .enter()
 
             svg.append("text")
-                .attr("x",15)
+                .attr("x",8)
                 .attr("y",25)
                 .text("--")
                 .attr("class",(d) => d.type + "-side-text")
@@ -87,17 +88,16 @@ class D3WAVE {
                 .text((d)=>sidePanelText[d.type])
                 .attr("class",(d) => d.type + "-legend-text")
 
+            svg.append("text")
+                .attr("x",35)
+                .attr("y",25)
+                .text((d)=>sidePanelText2[d.type])
+                .attr("class",(d) => d.type + "-legend-text")
+
     }
 
     
     decorateTracing(){
-        var tracing = d3.select("." + this.options.type + "-tracing")
-            .append("line")
-            .attr("x1",5)
-            .attr("x2",100)
-            .attr("y1",10)
-            .attr("y2",10)
-            .attr("class",this.options.type)
 
     }
 
@@ -107,8 +107,6 @@ class D3WAVE {
             .append("svg")
             .attr("viewBox","0 0 1000 200")
             .attr("className",this.options.type + "-tracing no-cpu")
-        
-        this.decorateTracing()
 
         var x = d3.scaleLinear().domain([0, 250]).range([30, this.w]);
         var y = d3.scaleLinear().domain([-2, 4]).range([this.h,0]);
@@ -125,6 +123,8 @@ class D3WAVE {
             var coming_data = this.data_cursor.slice(0,250)
             var going_data = this.data_cursor.slice(250,500)
             this.data_cursor = this.data_cursor.slice(500,this.data_cursor.length)
+            this.decorateTracing()
+
 
             var coming = svg.append("path")
                 .attr("d", line(coming_data))
@@ -175,7 +175,9 @@ class D3WAVE {
                     this.params.tp.duration = () => this.options.rate + Math.floor(Math.random()*20)
                     break
                 case "afib":
-                    this.params.tp.duration = () => Math.random() * this.options.rate
+                    this.params.tp.duration = () => Math.random() * 2 * this.options.rate
+                    this.params.tp.fx = () => Math.random()/50
+                    this.params.p.fx = (x) => Math.random()/50
                     break
                 case "oximetry":
                     Object.values(this.params).map((i) => i.duration = () => 0)

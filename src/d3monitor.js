@@ -24,6 +24,7 @@ class D3MONITOR {
     drawBottomPanel(){
     	var count = this.options.bottom.length
     	var legend_text = {"bp":"NIBP","temp":"°C","rr":"RR"}
+        var legend_text_small = {"bp":"AUTO","temp":"","rr":""}
     	
 		var svg = d3.select(".bottom-panel")
     		.selectAll("div")
@@ -31,13 +32,13 @@ class D3MONITOR {
     		.enter()
     		.append("svg")
     		.attr("class","bottom-item")
-	       	.attr("viewBox","0 0 200 25")
+	       	.attr("viewBox","0 0 200 100")
 	       	.attr("height","200")
 	       	.attr("width",(d)=>100/count +"%")
 
     	svg.append("text")
     		.attr("x",100)
-    		.attr("y",50)
+    		.attr("y",45)
     		.text((d)=> d.value)
     		.attr("class",(d) => d.type + "-bottom-text " + "bottom-text")
     		.style("text-anchor","middle")
@@ -48,6 +49,13 @@ class D3MONITOR {
     		.text((d)=> legend_text[d.type])
     		.attr("class",(d) => d.type + "-bottom-legend")
     		.style("text-anchor","end")
+
+        svg.append("text")
+            .attr("x",25)
+            .attr("y",70)
+            .text((d)=> legend_text_small[d.type])
+            .attr("class",(d) => d.type + "-bottom-legend")
+            .style("text-anchor","start")
     }
 
     updateBottomText(i){
