@@ -11,9 +11,9 @@ class Monitor extends React.Component {
     this.options = 
               { 
                 "tracings": [
-                    {"type":"cardiac","wave":"afib","rate":20},
-                    {"type":"oximetry","wave":"oximetry","o2range":[95,100]},
-                    // {"type":"capnography","wave":"capnography"},
+                    {"type":"cardiac","wave":"sinus","rate":100},
+                    {"type":"oximetry","wave":"pleth","range":[95,100]},
+                    {"type":"capnography","wave":"cap","range":[95,100]},
                     ],
                 "bottom": [
                     {"type":"bp","value":"120/80"},

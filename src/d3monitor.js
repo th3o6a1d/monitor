@@ -11,8 +11,7 @@ class D3MONITOR {
  		this.options.tracings = this.options.tracings.map((t,i) => {
  			t.name = "tracing" + i
  			var tracing = new D3WAVE(t)
- 			tracing.drawTracing()
- 			tracing.drawSidePanel()
+ 			tracing.initialize()
  			return tracing
  		})
  		this.drawBottomPanel()
@@ -40,7 +39,7 @@ class D3MONITOR {
     		.attr("x",100)
     		.attr("y",45)
     		.text((d)=> d.value)
-    		.attr("class",(d) => d.type + "-bottom-text " + "bottom-text")
+    		.attr("class",(d) => d.type + "-bottom-text bottom-text")
     		.style("text-anchor","middle")
 
         svg.append("text")
