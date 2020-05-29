@@ -2,6 +2,7 @@ import React from 'react';
 import * as serviceWorker from './serviceWorker';
 import D3MONITOR from './d3monitor';
 import './monitor.css';
+var QRCode = require('qrcode.react');
 
 class Monitor extends React.Component {
 
@@ -29,13 +30,22 @@ class Monitor extends React.Component {
       this.monitor.initialize()
   }
 
+
+// <QRCode bgColor="yellow" includeMargin="false" value="http://facebook.github.io/react/" />
+
   render() {
     return (
       <div className="monitor no-cpu">
         <div className="top panel"/>
-        <div className="side-panel"/>
+        <div id="sidePanel" className="side-panel">
+        <div className="qr">
+        Control this monitor
+        <QRCode size="100" renderAs="svg" includeMargin="true" value="http://facebook.github.io/react/" />
+        </div>
+        </div>
         <div className="tracing-container"/>
         <div className="bottom-panel"/>
+        
       </div>
     );
   }

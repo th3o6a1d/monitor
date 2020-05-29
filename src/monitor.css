@@ -64,8 +64,18 @@ svg {
   border-left: 1px solid white;
 }
 
+.qr {
+  right:0;
+  max-height: 100px;
+  position: absolute;
+  bottom:0;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
 .side-panel {
   width:20%;
+  height:100%;
   float:right;
 }
 
@@ -95,7 +105,6 @@ svg {
 .going {
   fill:none;
 }
-
 
 .capnography-side-text {
   fill:#ecf542;
@@ -155,6 +164,6 @@ svg {
 
 .bottom-panel {
   float: left;
-  width: 100%;
-  height:100%;
+  width: 80%;
+  /*height:100%;*/
 }

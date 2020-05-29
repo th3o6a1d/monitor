@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^7.1.2",
     "d3": "^5.16.0",
     "g.js": "^0.1.17",
+    "qrcode.react": "^1.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
