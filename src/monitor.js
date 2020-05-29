@@ -13,8 +13,8 @@ class Monitor extends React.Component {
               { 
                 "tracings": [
                     {"type":"cardiac","wave":"sinus","rate":100},
-                    {"type":"oximetry","wave":"pleth","range":[95,100]},
-                    {"type":"capnography","wave":"cap","range":[95,100]},
+                    // {"type":"oximetry","wave":"pleth","range":[95,100]},
+                    // {"type":"capnography","wave":"cap","range":[95,100]},
                     ],
                 "bottom": [
                     {"type":"bp","value":"120/80"},
@@ -38,13 +38,16 @@ class Monitor extends React.Component {
       <div className="monitor no-cpu">
         <div className="top panel"/>
         <div id="sidePanel" className="side-panel">
-        <div className="qr">
-        Control this monitor
-        <QRCode size="100" renderAs="svg" includeMargin="true" value="http://facebook.github.io/react/" />
-        </div>
         </div>
         <div className="tracing-container"/>
         <div className="bottom-panel"/>
+        <div id="footer">
+
+          <div className="qr">
+          <QRCode size="150" bgColor="#b5f9ff" renderAs="svg" includeMargin="true" value="http://facebook.github.io/react/" />
+        </div>
+
+        </div>
         
       </div>
     );
