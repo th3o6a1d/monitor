@@ -8,9 +8,12 @@ class D3WAVE {
         this.options = options
         this.h = 200
         this.w = 1000
-        this.type = this.options.type
         this.segmentDuration = 5000
         this.data_cursor = []
+
+        this.sidePanelText = {"cardiac":"ECG","oximetry":"SPO2","capnography":"ETCO2"}
+        this.sidePanelText2 = {"cardiac":"bpm","oximetry":"","capnography":""}
+        this.tracingDecorator = {"cardiac":"II","oximetry":"PLETH"}
 
         this.params = {
             p: { duration: () => 12, fx: (x) => 2 * Math.pow(x, 3) * (1-x) },
@@ -24,9 +27,10 @@ class D3WAVE {
             z: {duration: ()=> 0, fx: (x) => 0}
         };
 
-        setInterval(()=>this.updateSidePanel(),4000)
+        setInterval(()=>this.updateSidePanel(),10000*Math.random())
 
     }
+
 
     fillDataCursor(){
         while (this.data_cursor.length < 600) {
@@ -66,9 +70,6 @@ class D3WAVE {
     }
 
     drawSidePanel(){    
-            var sidePanelText = {"cardiac":"ECG","oximetry":"SPO2","capnography":"ETCO2"}
-            var sidePanelText2 = {"cardiac":"bpm","oximetry":"","capnography":""}
-
             var svg = d3.select(".side-panel")
                 .append("svg")
                 .attr("viewBox","0 0 50 40")
@@ -85,37 +86,44 @@ class D3WAVE {
             svg.append("text")
                 .attr("x",3)
                 .attr("y",10)
-                .text((d)=>sidePanelText[d.type])
+                .text((d)=>this.sidePanelText[d.type])
                 .attr("class",(d) => d.type + "-legend-text")
 
             svg.append("text")
                 .attr("x",35)
                 .attr("y",25)
-                .text((d)=>sidePanelText2[d.type])
+                .text((d)=>this.sidePanelText2[d.type])
                 .attr("class",(d) => d.type + "-legend-text")
 
     }
 
     
     decorateTracing(){
-
+            var svg = d3.select("." + this.options.type + "-tracing")
+                .append("text")
+                .attr("x",50)
+                .attr("y",50)
+                .style("font-size","25px")
+                .text(this.tracingDecorator[this.options.type])
+                .attr("class",this.options.type+"-legend-text")
     }
 
     drawTracing(){
 
-        var svg = d3.select(".tracing-container")
-            .append("svg")
-            .attr("viewBox","0 0 1000 200")
-            .attr("className",this.options.type + "-tracing no-cpu")
-
-        var x = d3.scaleLinear().domain([0, 250]).range([30, this.w]);
-        var y = d3.scaleLinear().domain([-2, 4]).range([this.h,0]);
+        var x = d3.scaleLinear().domain([0, 250]).range([0, this.w]);
+        var y = d3.scaleLinear().domain([-2, 5]).range([this.h,0]);
 
         var line = d3.line()
             .x(function(d,i) {return x(i);})
             .y(function(d) {return y(d);})
             .curve(d3.curveNatural)
 
+        var svg = d3.select(".tracing-container")
+            .append("svg")
+            .attr("viewBox","0 0 1000 200")
+            .attr("class",this.options.type + "-tracing no-cpu")
+
+        
         let repeat = (went) => {
 
 

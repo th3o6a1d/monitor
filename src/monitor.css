@@ -4,6 +4,13 @@ html, body {
   background-color: black;
 }
 
+.pause {
+   -webkit-animation-play-state: paused !important; 
+   -moz-animation-play-state: paused !important; 
+   -o-animation-play-state: paused !important;
+    animation-play-state: paused !important;
+}
+
 .monitor{
   height:100vh;
 }
