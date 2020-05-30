@@ -11,7 +11,7 @@ tracings:
 		[X] sinus 			rate [30, 170]
 		[X] aflutter
 		[ ] svt
-		[ ] third-degree
+		[X] third-degree
 		[ ] vfib
 		[ ] vtach
 		[ ] poly-vtach

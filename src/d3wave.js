@@ -30,6 +30,7 @@ class D3WAVE {
             z: {duration: ()=> 0, fx: (x) => 0}
         };
 
+
         setInterval(()=>this.updateSidePanel(),4000 + Math.random()*1000)
 
     }
@@ -40,6 +41,7 @@ class D3WAVE {
         this.decorateTracing()
         this.drawTracing()
         this.updateSidePanel()
+        console.log(this.state)
     }
 
     fillDataCursor(){
@@ -190,16 +192,16 @@ class D3WAVE {
 
     _generateWave() {
 
-            this.drawPQRSTZ = () =>{
-                var p_y = d3.range(0,1,1/this.params.p.duration()*scalingConstant).map(this.params.p.fx);
-                var pq_y = d3.range(0,1,1/this.params.pq.duration()*scalingConstant).map(this.params.pq.fx);
-                var q_y = d3.range(0,1,1/this.params.q.duration()*scalingConstant).map(this.params.q.fx);
-                var r_y = d3.range(0,1,1/this.params.r.duration()*scalingConstant).map(this.params.r.fx);
-                var s_y = d3.range(0,1,1/this.params.s.duration()*scalingConstant).map(this.params.s.fx);
-                var st_y = d3.range(0,1,1/this.params.st.duration()*scalingConstant).map(this.params.st.fx);
-                var t_y = d3.range(0,1,1/this.params.t.duration()*scalingConstant).map(this.params.t.fx);
-                var tp_y = d3.range(0,1,1/this.params.tp.duration()*scalingConstant).map(this.params.tp.fx);
-                var z_y = d3.range(0,1,1/this.params.z.duration()*scalingConstant).map(this.params.z.fx);
+            this.drawPQRSTZ = (paramCopy) =>{
+                var p_y = d3.range(0,1,1/paramCopy.p.duration()*scalingConstant).map(paramCopy.p.fx);
+                var pq_y = d3.range(0,1,1/paramCopy.pq.duration()*scalingConstant).map(paramCopy.pq.fx);
+                var q_y = d3.range(0,1,1/paramCopy.q.duration()*scalingConstant).map(paramCopy.q.fx);
+                var r_y = d3.range(0,1,1/paramCopy.r.duration()*scalingConstant).map(paramCopy.r.fx);
+                var s_y = d3.range(0,1,1/paramCopy.s.duration()*scalingConstant).map(paramCopy.s.fx);
+                var st_y = d3.range(0,1,1/paramCopy.st.duration()*scalingConstant).map(paramCopy.st.fx);
+                var t_y = d3.range(0,1,1/paramCopy.t.duration()*scalingConstant).map(paramCopy.t.fx);
+                var tp_y = d3.range(0,1,1/paramCopy.tp.duration()*scalingConstant).map(paramCopy.tp.fx);
+                var z_y = d3.range(0,1,1/paramCopy.z.duration()*scalingConstant).map(paramCopy.z.fx);
                 var y = [p_y, pq_y, q_y, r_y, s_y, st_y, t_y, tp_y, z_y].reduce((a, b) => a.concat(b), []);
                 return y
             }
@@ -209,49 +211,51 @@ class D3WAVE {
             var tpInterpolation = -49.97301 + (421478.7 + 49.97301)/(1 + (this.options.rate/0.0142982)^1.000545)
             var breathInterpolation = this.options.rate - 60
             var scalingConstant = Math.max(2,2+((this.options.rate + 0.01 - 120)/ 30))
-
+            var paramCopy = {}
+            paramCopy = Object.assign(this.params,paramCopy)
 
             switch(this.options.wave){
 
+
                 case "sinus":
-                    this.params.tp.duration = () =>  tpInterpolation + ((Math.random()-1)*scalingConstant)
-                    break
+                    paramCopy.tp.duration = () =>  tpInterpolation
+                    return this.drawPQRSTZ(paramCopy)
                 case "afib":  
-                    this.params.tp.duration = () => tpInterpolation + ((Math.random()-1)*scalingConstant)
-                    this.params.p.fx = (x) => Math.random()/10
+                    paramCopy.tp.duration = () => tpInterpolation + ((Math.random()-1)*scalingConstant)
+                    paramCopy.p.fx = (x) => Math.random()/10
                     break
                 case "aflutter":  
-                    this.params.tp.duration = () => tpInterpolation + ((Math.random()-1)*scalingConstant)
-                    var qrst = this.drawPQRSTZ()
+                    paramCopy.tp.duration = () => tpInterpolation + ((Math.random()-1)*scalingConstant)
+                    var qrst = this.drawPQRSTZ(paramCopy)
                     var pWave = qrst.slice(0,8)
                     var pWaveArray = new Array(qrst.length).fill(pWave).flat()
                     var y = qrst.map((x,i)=>x+pWaveArray[i])
                     return y
                     break
                 case "third-degree":  
-                    this.params.tp.duration = () => tpInterpolation + ((Math.random()-1)*scalingConstant)
-                    var qrst = this.drawPQRSTZ()
-                    var pWave = qrst.slice(0,8)
-                    qrst.splice(0,8)
-                    var pWaveArray = new Array(qrst.length).fill(pWave.concat(new Array(35 + Math.floor(Math.random()*4)).fill(0))).flat()
+                    paramCopy.tp.duration = () => tpInterpolation + ((Math.random()-1)*scalingConstant)
+                    var qrst = this.drawPQRSTZ(paramCopy)
+                    var pWave = qrst.slice(0,8).map((x)=>x*3)
+                    qrst = qrst.splice(8,qrst.length)
+                    var pWaveArray = new Array(qrst.length).fill(pWave.concat(new Array(35 + Math.floor(Math.random()*10)).fill(0))).flat()
                     var y = qrst.map((x,i)=>x+pWaveArray[i])
                     return y
                     break
                 case "pleth":
-                    Object.values(this.params).map((i) => i.duration = () => 0)
-                    this.params.z.duration = () => tpInterpolation + 50
-                    this.params.z.fx = (x) => -Math.sin(x*Math.PI*2)/2 - 2*Math.sin(12.5*x-Math.PI)/2 +1
+                    Object.values(paramCopy).map((i) => i.duration = () => 0)
+                    paramCopy.z.duration = () => tpInterpolation + 50
+                    paramCopy.z.fx = (x) => -Math.sin(x*Math.PI*2)/2 - 2*Math.sin(12.5*x-Math.PI)/2 +1
                     break
                 case "cap":
-                    Object.values(this.params).map((i) => i.duration = () => 0)
-                    this.params.z = { duration: () => 35 , fx: (x) => -squareWave(x + Math.random()/100)}
-                    var z_y = d3.range(0,1,1/this.params.z.duration()).map(this.params.z.fx);
+                    Object.values(paramCopy).map((i) => i.duration = () => 0)
+                    paramCopy.z = { duration: () => 35 , fx: (x) => -squareWave(x + Math.random()/100)}
+                    var z_y = d3.range(0,1,1/paramCopy.z.duration()).map(paramCopy.z.fx);
                     return [0].concat(z_y).concat([0])
                 default:
                     break
             }
                
-            return this.drawPQRSTZ()
+            return this.drawPQRSTZ(paramCopy)
 
     }
 

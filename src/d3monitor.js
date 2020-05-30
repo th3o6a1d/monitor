@@ -8,7 +8,7 @@ class D3MONITOR {
  	}
 
  	initialize() {
- 		this.options.tracings = this.options.tracings.map((t,i) => {
+ 		this.tracingArray = this.options.tracings.map((t,i) => {
  			t.name = "tracing" + i
  			var tracing = new D3WAVE(t)
  			tracing.initialize()
@@ -17,8 +17,16 @@ class D3MONITOR {
  		this.drawBottomPanel()
  		this.updateBottomPanel()
  		setInterval(()=>this.updateBottomPanel(),10000)
+        
  	}
 
+    update(options) {
+        // var y = this.options.tracings.length
+        // if(this.tracingArray.length != y) {
+        //     this.initialize()
+        // }
+        this.tracingArray.map((x,i)=> x.options = this.options.tracings[i])
+    }
 
     drawBottomPanel(){
     	var count = this.options.bottom.length
