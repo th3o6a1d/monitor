@@ -1,0 +1,5 @@
+<div id="monitor" name="monitor" class="monitor no-cpu"></div><script type="module" src="http://localhost:3000/plugin/d3monitor-beta.min.js"></script><script>window.onload = function() { var options={ "tracings": [ { "type": "cardiac", "wave": "sinus", "rate": 100, "name": "tracingS7MZCI" }, { "type": "oximetry", "wave": "pleth", "rate": 100, "range": [ 95, 100 ], "name": "tracingIN9IF5" }, { "type": "capnography", "wave": "cap", "rate": 20, "range": [ 35, 40 ], "name": "tracingTM9K0C" } ], "bottom": [ { "type": "bp", "value": "120/80" }, { "type": "temp", "value": "37.7" }, { "type": "rr", "value": "20" } ]};
+
+var D3MONITOR = new window.d3monitor("monitor",options);
+
+D3MONITOR.initialize()};</script>

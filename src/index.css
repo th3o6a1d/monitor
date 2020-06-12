@@ -1,0 +1,88 @@
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+        monospace;
+    font-size: 12px;
+    word-wrap: break-word;
+}
+
+input {
+    background-color: #b4dbd7;
+}
+
+table {
+    text-align: left;
+}
+
+td {
+    width: 30%;
+}
+
+html,body{
+	height:100%;
+    margin:0;
+	background-color: black;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    height: 50px;
+    width: 100%;
+    padding: 3px;
+    background-color: #383838;
+}
+
+.qr {
+    z-index: 1000
+}
+
+.footer-item {
+    height: 3em;
+    width: 3em;
+    line-height: 3em;
+    float: left;
+    margin-right: 5px;
+}
+
+.footer-item-text, a {
+    color:black;
+    stroke:2px;
+    padding:5px;
+}
+
+.close {
+    border: 1px solid black;
+    float:  right;
+    padding:10px;
+}
+
+.footer-item:hover {
+    /*background-color: #b4dbd7;*/
+    cursor: pointer;
+}
+
+.about {
+    float: left;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 20px;
+    background-color: white;
+}
+
+.update-button {
+    width: 100%;
+    height: 20px;
+    background-color: #b4dbd7;
+    padding: 5px;
+    margin-top: 5px;
+    text-align: center;
+    color: black;
+}
+
+.update-button:hover {
+    background-color: #52ff66;
+}

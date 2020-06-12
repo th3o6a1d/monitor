@@ -1,0 +1,250 @@
+
+
+.options {
+    border-radius: 2px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
+    background-color: white;
+    width: 80%;
+    height: 70%;
+    color: #383838;
+    z-index: 4;
+    opacity: 0.85;
+    padding: 20px;
+    overflow: scroll;
+}
+
+.control-select {}
+
+.control-tracing {
+    width: 30%;
+    padding: 20px;
+    float: left;
+}
+
+.options-right {
+    float: right;
+    width: 45%;
+    height: 100%;
+    word-wrap: break-word;
+    overflow-y: auto;
+}
+
+.options-left {
+    float: left;
+    width: 50%;
+    height: 100%;
+    overflow: scroll;
+}
+
+.control-panel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    z-index: 1000;
+    opacity: 0.9;
+}
+
+.options-textarea {
+    background-color: #b4dbd7;
+    opacity: 1.0;
+    width: 100%;
+    height: 50%;
+    resize: none;
+    border: none;
+    overflow: auto;
+    outline: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    resize: none;
+    -webkit-box-shadow: inset 2px 2px 2px 0px #dddddd;
+    -moz-box-shadow: inset 2px 2px 2px 0px #dddddd;
+    box-shadow: inset 2px 2px 2px 0px #dddddd;
+}
+
+.pause {
+    -webkit-animation-play-state: paused !important;
+    -moz-animation-play-state: paused !important;
+    -o-animation-play-state: paused !important;
+    animation-play-state: paused !important;
+}
+
+.monitor {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: grey;
+    background-color: black;
+    margin-left: auto;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-user-select: none;
+    height:100%;
+}
+
+.tracing-container:hover {
+    -webkit-animation-play-state: paused;
+    -moz-animation-play-state: paused;
+    -o-animation-play-state: paused;
+    animation-play-state: paused;
+}
+
+.tracing-container {
+    width: 80%;
+    top: 0;
+    left: 0;
+}
+
+.no-cpu {
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    -moz-perspective: 1000;
+    -ms-perspective: 1000;
+    perspective: 1000;
+    transform: translateZ(0);
+}
+
+.button {
+    font-size: 100px;
+    color: white;
+}
+
+svg {
+    overflow: visible;
+}
+
+.bottom-item {
+    float: left;
+    min-height: 200px;
+    max-height: 200px;
+    margin-top: auto;
+    padding-top: 5px;
+    overflow: visible;
+}
+
+.bottom-text {
+    fill: green;
+    font-size: 120;
+}
+
+.side {
+    border-bottom: 1px solid white;
+    border-left: 1px solid white;
+}
+
+.qr {
+    right: 0;
+    position: absolute;
+    bottom: 0;
+}
+
+
+.side-panel {
+    width: 20%;
+    /*height:80%;*/
+    float: right;
+}
+
+/*Icons made by <a href="https://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>*/
+
+.cardiac {
+    fill: none;
+    stroke: #20fc03;
+    stroke-width: 3;
+}
+
+.cardiac-side-text {
+    fill: #20fc03;
+    /*font-size: 120;*/
+}
+
+.cardiac-legend-text {
+    fill: #20fc03;
+    font-size: 5px;
+}
+
+.capnography {
+    fill: none;
+    /*fill: #ecf542;*/
+    stroke: #ecf542;
+    stroke-width: 3;
+}
+
+.going {
+    fill: none;
+}
+
+
+.capnography-side-text {
+    fill: #ecf542;
+    /*font-size: 120;*/
+}
+
+.capnography-legend-text {
+    fill: #ecf542;
+    font-size: 5px;
+}
+
+
+.oximetry {
+    fill: none;
+    stroke: #29d1ff;
+    stroke-width: 3;
+}
+
+.oximetry-side-text {
+    fill: #29d1ff;
+    /*font-size: 120;*/
+}
+
+.oximetry-legend-text {
+    fill: #29d1ff;
+    font-size: 5px;
+}
+
+.bp-bottom-text {
+    fill: #de31d2;
+    font-size: 50px;
+}
+
+.bp-bottom-legend {
+    fill: #de31d2;
+}
+
+.temp-bottom-text {
+    fill: #f54242;
+    font-size: 50px;
+}
+
+.temp-bottom-legend {
+    fill: #f54242;
+    font-size: 20px;
+}
+
+.rr-bottom-text {
+    fill: #f5f7f7;
+    font-size: 50px;
+}
+
+.rr-bottom-legend {
+    fill: #f5f7f7;
+}
+
+
+.bottom-panel {
+    float: left;
+    width: 100%;
+    position: relative;
+    background-color: black
+    /*height:100%;*/
+}
