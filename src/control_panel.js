@@ -63,7 +63,7 @@ class ControlPanel extends React.Component {
           <h3>O2 Range (this + 5%)</h3>
           <Select className="control-select" name="o2" placeholder={this.state.o2} onChange={this.handleChange} options={this.o2}/>
           <br/>
-          
+          <h4>Use the QR code to remotely control the original window.</h4>
       </div>
       <div className="control-tracing">
       <h3>Blood Pressure</h3>
